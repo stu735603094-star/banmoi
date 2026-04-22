@@ -3,113 +3,109 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bản Đồ Ngập Lụt Phú Hòa - THPT Trần Suyền</title>
+    <title>Mo phong Ngap Lut - THPT Tran Suyen</title>
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background: #f0f4f8; display: flex; flex-direction: column; align-items: center; }
-        .header { background: #004a8c; color: white; width: 100%; text-align: center; padding: 20px 0; border-bottom: 4px solid #ff9800; }
-        
-        .container { max-width: 1000px; width: 95%; margin: 20px auto; }
-        
-        /* Khung chứa các lớp bản đồ chồng lên nhau */
+        body { margin:0; font-family: 'Segoe UI', Arial, sans-serif; background:#f4f7f9; display: flex; flex-direction: column; align-items: center; }
+        .header { background:#003366; color:#fff; padding:20px; text-align:center; width: 100%; border-bottom: 5px solid #ff9800; }
+        .container { max-width:1000px; width: 95%; margin: 20px auto; }
+
+        /* Khung chứa bản đồ */
         .map-box { 
-            position: relative; 
-            background: #fff; 
-            border-radius: 15px; 
-            overflow: hidden; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            line-height: 0; /* Khử khoảng cách thừa chân ảnh */
+            position:relative; 
+            background:#fff; 
+            border-radius:15px; 
+            overflow:hidden; 
+            box-shadow:0 10px 30px rgba(0,0,0,0.2);
+            min-height: 400px;
         }
 
-        .map-box img { 
-            width: 100%; 
-            height: auto; 
+        /* Các lớp bản đồ chồng lên nhau */
+        .map-layer {
+            width:100%;
+            height: auto;
+            display: none;
+            border-radius: 10px;
         }
 
-        /* Lớp ảnh ngập lụt nằm đè lên lớp nền */
-        .flood-layer {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            opacity: 0;
-            transition: opacity 1.2s ease-in-out; /* Hiệu ứng nước dâng mượt */
+        .map-layer.active {
+            display: block;
+            animation: fadeIn 1s ease-in-out;
         }
 
-        .flood-layer.active {
-            opacity: 1;
-            position: relative; /* Lớp active sẽ định hình độ cao cho khung */
-        }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        .controls { margin-top: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-        button { padding: 12px 20px; border-radius: 30px; border: 1px solid #004a8c; background: white; cursor: pointer; font-weight: bold; color: #004a8c; transition: 0.3s; }
-        button.active { background: #004a8c; color: white; }
-        button.play-btn { background: #ff9800; color: white; border: none; }
+        /* Điều khiển */
+        .controls { margin-top:20px; display:flex; gap:10px; justify-content:center; flex-wrap: wrap; }
+        button { padding:12px 20px; border-radius:25px; border:1px solid #003366; background:#fff; color:#003366; cursor:pointer; font-weight:bold; transition: 0.3s; }
+        button.active { background:#003366; color:#fff; }
+        button.play-btn { background:#ff9800; color:#fff; border:none; }
 
-        .mission { margin-top: 20px; background: #fff; padding: 20px; border-left: 6px solid #e91e63; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        /* Nhiệm vụ */
+        .mission { margin-top:20px; background:#fff; padding:20px; border-left:6px solid #e91e63; border-radius:10px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); }
     </style>
 </head>
 <body>
 
 <div class="header">
-    <h2>HỆ THỐNG MÔ PHỎNG NGẬP LỤT TƯƠNG TÁC</h2>
-    <p>Trường THPT Trần Suyền - Huyện Phú Hòa</p>
+    <h2>HE THONG MO PHONG NGAP LUT DONG</h2>
+    <p>Truong THPT Tran Suyen - Phu Hoa</p>
 </div>
 
 <div class="container">
     <div class="map-box">
-        <img src="GTHONG.png" id="img-gt" class="flood-layer active">
-        <img src="DEM2.png" id="img-dh" class="flood-layer">
-        <img src="BDC1.png" id="img-c1" class="flood-layer">
-        <img src="BDC2.png" id="img-c2" class="flood-layer">
-        <img src="BDC3.png" id="img-c3" class="flood-layer">
+        <img src="GTHONG.png" id="img-gt" class="map-layer active">
+        <img src="DEM2.png" id="img-dh" class="map-layer">
+        <img src="BDC1.png" id="img-c1" class="map-layer">
+        <img src="BDC2.png" id="img-c2" class="map-layer">
+        <img src="BDC3.png" id="img-c3" class="map-layer">
     </div>
 
     <div class="controls">
-        <button onclick="update('gt', this)" class="active">Giao thông</button>
-        <button onclick="update('dh', this)">Địa hình</button>
-        <button onclick="update('c1', this)" id="btn-c1">BĐ 1</button>
-        <button onclick="update('c2', this)" id="btn-c2">BĐ 2</button>
-        <button onclick="update('c3', this)" id="btn-c3">BĐ 3</button>
-        <button class="play-btn" onclick="playAuto()">▶ Chạy mô phỏng</button>
+        <button onclick="update('gt', this)" class="active">Giao thong</button>
+        <button onclick="update('dh', this)">Dia hinh</button>
+        <button onclick="update('c1', this)" id="btn-c1">BD 1</button>
+        <button onclick="update('c2', this)" id="btn-c2">BD 2</button>
+        <button onclick="update('c3', this)" id="btn-c3">BD 3</button>
+        <button class="play-btn" onclick="playAuto()">▶ Chay tu dong</button>
     </div>
 
     <div class="mission" id="mission-text">
-        <b>Nhiệm vụ:</b> Quan sát mạng lưới giao thông quanh trường THPT Trần Suyền.
+        <b>Nhiem vu:</b> Quan sat mang luoi giao thong quanh truong THPT Tran Suyen.
     </div>
 </div>
 
 <script>
-    const data = {
-        'gt': '<b>Giao thông:</b> Quan sát các tuyến đường QL25 và cao tốc.',
-        'dh': '<b>Địa hình:</b> Xác định các vùng cao (màu nhạt) để sơ tán.',
-        'c1': '<b>Báo động 1:</b> Nước bắt đầu dâng ở vùng ven sông.',
-        'c2': '<b>Báo động 2:</b> Ngập lụt diện rộng, nhiều đường bị cắt đứt.',
-        'c3': '<b>Báo động 3:</b> Tình trạng khẩn cấp! Toàn vùng bị chia cắt.'
+    const content = {
+        'gt': '<b>Giao thong:</b> Quan sat cac truc duong QL25 va cao toc.',
+        'dh': '<b>Dia hinh:</b> Tim cac vung cao de so tan (DEM2).',
+        'c1': '<b>Bao dong 1:</b> Nuoc bat dau dang o vung ven song.',
+        'c2': '<b>Bao dong 2:</b> Ngap lut dien rong, nhieu duong bi cat dut.',
+        'c3': '<b>Bao dong 3:</b> Tinh trang khan cap! Toan vung bi chia cat.'
     };
 
-    let playInterval;
+    let interval;
 
     function update(id, btn) {
-        // Tắt tự động nếu người dùng nhấn nút thủ công
-        if (!btn.id.startsWith('btn-auto')) clearInterval(playInterval);
-
-        // Chuyển ảnh bằng hiệu ứng mờ dần
-        document.querySelectorAll('.flood-layer').forEach(img => img.classList.remove('active'));
-        document.getElementById('img-' + id).classList.add('active');
-
-        // Cập nhật text
-        document.getElementById('mission-text').innerHTML = data[id];
-
-        // Đổi màu nút
+        // Xoa class active o tat ca anh va nut
+        document.querySelectorAll('.map-layer').forEach(img => img.classList.remove('active'));
         document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
+
+        // Hien anh duoc chon
+        const targetImg = document.getElementById('img-' + id);
+        if(targetImg) targetImg.classList.add('active');
+
+        // Bat nut duoc chon
+        if(btn) btn.classList.add('active');
+
+        // Cap nhat chu
+        document.getElementById('mission-text').innerHTML = content[id];
     }
 
     function playAuto() {
-        clearInterval(playInterval);
+        clearInterval(interval);
         let steps = ['c1', 'c2', 'c3'];
         let i = 0;
-        playInterval = setInterval(() => {
+        interval = setInterval(() => {
             const id = steps[i];
             update(id, document.getElementById('btn-' + id));
             i++;
