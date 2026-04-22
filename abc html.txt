@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bản Đồ Ngập Lụt Động - THPT Trần Suyền</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; }
+        .header { background: #004a8c; color: white; width: 100%; text-align: center; padding: 20px 0; border-bottom: 4px solid #ff9800; }
+        .controls { margin: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+        button { padding: 12px 20px; cursor: pointer; border: 1px solid #004a8c; border-radius: 30px; background: white; font-weight: bold; color: #004a8c; transition: 0.3s; }
+        button.active { background: #004a8c; color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.2); }
+        
+        /* Nút đặc biệt cho chế độ video */
+        .btn-video { background: #ff9800; color: white; border: none; }
+        .btn-video:hover { background: #e68a00; }
+
+        .map-container { position: relative; width: 95%; max-width: 1000px; background: white; padding: 10px; border-radius: 15px; box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+        .map-layer { width: 100%; height: auto; display: none; border-radius: 8px; }
+        .map-layer.active { display: block; animation: fadeIn 1s ease-in-out; }
+
+        .mission-box { margin: 20px; padding: 25px; background: #fff; border-left: 8px solid #e91e63; max-width: 900px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    </style>
+</head>
+<body>
+
+<div class="header">
+    <h1>MÔ PHỎNG NƯỚC DÂNG TỰ ĐỘNG</h1>
+    <p>Trường THPT Trần Suyền - Huyện Phú Hòa</p>
+</div>
+
+<div class="controls">
+    <button onclick="changeContent('gt', this)">Giao thông</button>
+    <button onclick="changeContent('dh', this)">Địa hình</button>
+    <button onclick="stopAuto(); changeContent('c1', this)" id="btn-c1">BĐ 1</button>
+    <button onclick="stopAuto(); changeContent('c2', this)" id="btn-c2">BĐ 2</button>
+    <button onclick="stopAuto(); changeContent('c3', this)" id="btn-c3">BĐ 3</button>
+    <button class="btn-video" onclick="startAuto()">▶ Xem mô phỏng nước dâng</button>
+</div>
+
+<div class="map-container">
+    <img src="GTHONG.png" id="gt" class="map-layer active">
+    <img src="DEM%20(2).png" id="dh" class="map-layer">
+    <img src="BDC1.png" id="c1" class="map-layer">
+    <img src="BDC2.png" id="c2" class="map-layer">
+    <img src="BDC3.png" id="c3" class="map-layer">
+</div>
+
+<div class="mission-box">
+    <div id="guide-text">
+        Nhấn vào <b>"Xem mô phỏng nước dâng"</b> để thấy quá trình mực nước thay đổi từ cấp 1 đến cấp 3.
+    </div>
+</div>
+
+<script>
+    const missions = {
+        'gt': 'Bản đồ giao thông hiện tại.',
+        'dh': 'Bản đồ địa hình khu vực.',
+        'c1': '<b>Cấp ngập 1:</b> Nước bắt đầu tràn vào các vùng trũng thấp ven sông.',
+        'c2': '<b>Cấp ngập 2:</b> Mực nước dâng cao, cắt đứt nhiều tuyến đường liên thôn.',
+        'c3': '<b>Cấp ngập 3:</b> Ngập lụt nghiêm trọng, hầu hết khu vực bị chia cắt.'
+    };
+
+    let autoPlayInterval;
+
+    function changeContent(id, btn) {
+        document.querySelectorAll('.map-layer').forEach(img => img.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        document.getElementById('guide-text').innerHTML = missions[id] || "";
+        document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        if(btn) btn.classList.add('active');
+    }
+
+    function startAuto() {
+        stopAuto(); // Xóa bộ hẹn giờ cũ nếu có
+        let step = 1;
+        
+        // Cứ mỗi 2 giây (2000ms) sẽ đổi một bản đồ
+        autoPlayInterval = setInterval(() => {
+            const id = 'c' + step;
+            const btn = document.getElementById('btn-' + id);
+            changeContent(id, btn);
+            
+            step++;
+            if (step > 3) step = 1; // Quay lại cấp 1 sau khi xong cấp 3
+        }, 2000);
+        
+        document.getElementById('guide-text').innerHTML = "<b>Đang chạy mô phỏng:</b> Nước đang dâng từ cấp 1 đến cấp 3...";
+    }
+
+    function stopAuto() {
+        clearInterval(autoPlayInterval);
+    }
+</script>
+
+</body>
+</html>
