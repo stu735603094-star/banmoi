@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bản Đồ Ngập Lụt - THPT Trần Suyền</title>
+    <title>Ban Do Ngap Lut - THPT Tran Suyen</title>
     <style>
         body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; background-color: #f0f4f8; display: flex; flex-direction: column; align-items: center; }
         .header { background: #004a8c; color: white; width: 100%; text-align: center; padding: 20px 0; border-bottom: 4px solid #ff9800; }
@@ -21,8 +21,8 @@
 <body>
 
 <div class="header">
-    <h1>HỆ THỐNG BẢN ĐỒ TƯƠNG TÁC</h1>
-    <p>Trường THPT Trần Suyền - Phú Hòa</p>
+    <h1>HE THONG BAN DO TUONG TAC</h1>
+    <p>Truong THPT Tran Suyen - Phu Hoa</p>
 </div>
 
 <div class="controls">
@@ -48,40 +48,48 @@
 
 <script>
     const missions = {
-        'gt': '<b>Giao thông:</b> Quan sát các trục đường QL25 và Cao tốc Bắc - Nam.',
-        'dh': '<b>Địa hình:</b> Tìm các khu vực cao (màu nhạt) để làm nơi trú ẩn.',
-        'c1': '<b>Báo động 1:</b> Tìm lộ trình từ trường Trần Suyền đến điểm an toàn.',
-        'c2': '<b>Báo động 2:</b> Nước đã dâng cao, hãy tìm hướng di chuyển dự phòng.',
-        'c3': '<b>Báo động 3:</b> Cảnh báo nguy hiểm! Đề xuất phương án cứu hộ tại chỗ.'
+        'gt': '<b>Giao thong:</b> Quan sat cac truc duong QL25 va Cao toc Bac - Nam.',
+        'dh': '<b>Dia hinh:</b> Tim cac khu vuc cao de lam noi tru an.',
+        'c1': '<b>Bao dong 1:</b> Tim lo trinh tu truong Tran Suyen den diem an toan.',
+        'c2': '<b>Bao dong 2:</b> Nuoc da dang cao, hay tim huong di chuyen du phong.',
+        'c3': '<b>Bao dong 3:</b> Canh bao nguy hiem! De xuat phuong an cuu ho tai cho.'
     };
 
     let autoPlayInterval;
 
     function changeContent(id, btn) {
-        document.querySelectorAll('.map-layer').forEach(img => img.classList.remove('active'));
+        document.querySelectorAll('.map-layer').forEach(img => {
+            img.classList.remove('active');
+        });
         const targetImg = document.getElementById(id);
-        if (targetImg) targetImg.classList.add('active');
+        if (targetImg) {
+            targetImg.classList.add('active');
+        }
         
         document.getElementById('guide-text').innerHTML = missions[id] || "";
-        document.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('button').forEach(b => {
+            b.classList.remove('active');
+        });
         if (btn) btn.classList.add('active');
     }
 
     function startAuto() {
         stopAuto();
         let step = 1;
-        autoPlayInterval = setInterval(() => {
+        autoPlayInterval = setInterval(function() {
             const id = 'c' + step;
             const btn = document.getElementById('btn-' + id);
             changeContent(id, btn);
             step++;
             if (step > 3) step = 1;
         }, 2000);
-        document.getElementById('guide-text').innerHTML = "<b>Đang mô phỏng:</b> Nước đang dâng từ cấp 1 đến cấp 3...";
+        document.getElementById('guide-text').innerHTML = "<b>Dang mo phong:</b> Nuoc dang tu cap 1 den cap 3...";
     }
 
     function stopAuto() {
-        clearInterval(autoPlayInterval);
+        if (autoPlayInterval) {
+            clearInterval(autoPlayInterval);
+        }
     }
 </script>
 
